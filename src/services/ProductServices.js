@@ -1,9 +1,11 @@
 
+
 export default class ProductService{
       
-    constructor({Product},{sequelize}){
+    constructor({Product,Category},{sequelize}){
           this.product = Product;
           this.sequelize = sequelize;
+          this.category = Category;
     }
 
     getAll= async ()=>{
@@ -32,6 +34,52 @@ export default class ProductService{
         }
         return obj;
 
+    }
+
+    getProductAndCategories =async()=>{
+        try{
+            let obj = await this.product.findAll({
+                include:{
+                    all:true
+                }
+            });
+        
+            if(obj.length == 0){
+                throw new Error("Nu exista produse in baza de date!");
+            }
+     
+            return obj;
+              
+          }catch(e){
+            throw new Error(e);
+          }
+    }
+
+    orderBy =async(order, desc='DESC')=>{
+        try{
+
+            if(order =='price-asc'){
+                order = 'price';
+                desc= 'ASC';
+            }
+            let obj = await this.product.findAll({
+                include:{
+                    all:true
+                },
+                order:[
+                    [`${order}`, `${desc}`],
+                ]
+            });
+        
+            if(obj.length == 0){
+                throw new Error("Nu exista produse in baza de date!");
+            }
+     
+            return obj;
+              
+          }catch(e){
+            throw new Error(e);
+          }
     }
 
     create= async(newObj)=>{

@@ -11,6 +11,8 @@ export default class ProductController{
          app.use("/api/v1/products", this.route);
 
          this.getAll();
+         this.getAllAndCategory();
+         this.orderBy();
          this.getById();
          this.create();
          this.delete();
@@ -36,6 +38,37 @@ export default class ProductController{
         });
 
    }
+
+   getAllAndCategory= async ()=>{
+        this.route.get("/cat", async (req,res,next)=>{
+            try{
+
+            let obj = await this.productService.getProductAndCategories();
+
+            res.status(200).json(obj);
+
+            }catch(e){
+                next(e);
+            }
+            
+        });
+    }
+
+    orderBy= async ()=>{
+        this.route.get("/order/:id", async (req,res,next)=>{
+            try{
+                let {id}= req.params;
+
+                let obj = await this.productService.orderBy(id);
+
+                res.status(200).json(obj);
+
+            }catch(e){
+                next(e);
+            }
+            
+        });
+    }
 
    getById= async()=>{
        this.route.get("/:id", async (req,res,next)=>{

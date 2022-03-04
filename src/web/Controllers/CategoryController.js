@@ -36,7 +36,6 @@ export default class CategoryController{
         });
 
    }
-
    getById= async()=>{
        this.route.get("/:id", async (req,res,next)=>{
            try{
