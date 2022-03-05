@@ -5,24 +5,30 @@ import { Sequelize } from "sequelize";
 import Product from "../model/product.js";
 import Category from "../model/category.js";
 
-import Student from "../model/student.js";
+import Customer from "../model/customer.js";
 
 export default  class Repository {
       
-        config =()=>  new Promise((resolve,reject)=>{
+        config =(database)=>  new Promise((resolve,reject)=>{
             fs.readFile(path.normalize("src\\config\\config.json"),'utf8',(err,data)=>{
                 if(err){
                     reject(err);
                 }else{
-                    const {development} = JSON.parse(data);
-                    resolve(development);
+                    if(database == "development"){
+                      const {development} = JSON.parse(data);
+                      resolve(development);
+                    }
+                    if(database == "test"){
+                      const {test} = JSON.parse(data);
+                      resolve(test);
+                    }
                 }
             });
         });
 
-        createDb= async()=>{
+        createDb= async(database)=>{
             try{
-               let development = await this.config();
+               let development = await this.config(database);
       
                let sequelize = new Sequelize(development.database, development.username, development.password, {
                   host: development.host,
@@ -36,10 +42,9 @@ export default  class Repository {
               db.sequelize = sequelize;
               db.Sequelize = Sequelize;
               db.models.Product = Product(sequelize);
-              db.models.Student = Student(sequelize);
+              db.models.Customer = Customer(sequelize);
               db.models.Category = Category(sequelize);
 
-              // o persoana poate aparea in mai multe inchirieri.
               db.models.Category.hasMany(db.models.Product,{
                   onDelete: 'CASCADE',
                   as:'fk_product_id',
@@ -49,7 +54,6 @@ export default  class Repository {
                   },
               });
 
-              // o inchiriere poate avea o singura persoana, persoana_id
               db.models.Product.belongsTo(db.models.Category,{
                 as:'fk_product_id',
                 foreignKey:{

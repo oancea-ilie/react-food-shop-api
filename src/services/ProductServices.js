@@ -55,27 +55,33 @@ export default class ProductService{
           }
     }
 
-    orderBy =async(order, desc='DESC')=>{
+    orderBy =async(order)=>{
         try{
 
+            let desc = 'DESC';
             if(order =='price-asc'){
                 order = 'price';
                 desc= 'ASC';
             }
-            let obj = await this.product.findAll({
-                include:{
-                    all:true
-                },
-                order:[
-                    [`${order}`, `${desc}`],
-                ]
-            });
-        
-            if(obj.length == 0){
-                throw new Error("Nu exista produse in baza de date!");
+
+            if(order == 'price' || order == 'price-asc' || order == 'id'){
+                let obj = await this.product.findAll({
+                    include:{
+                        all:true
+                    },
+                    order:[
+                        [`${order}`, `${desc}`],
+                    ]
+                });
+
+                if(obj.length == 0){
+                    throw new Error("Nu exista produse in baza de date!");
+                }
+
+                return obj;
+            }else{
+                throw new Error("Nu exista acest type pentru order!");
             }
-     
-            return obj;
               
           }catch(e){
             throw new Error(e);
@@ -95,8 +101,14 @@ export default class ProductService{
         else if(!newObj.price){
             throw new Error('Campul price este gol!');
         }
+        else if(typeof newObj.price != 'number'){
+            throw new Error('Campul price nu este numar!');
+        }
         else if(!newObj.category_id){
             throw new Error('Campul category_id este gol!');
+        }
+        else if(typeof newObj.category_id != 'number'){
+            throw new Error('Campul category_id nu este numar!');
         }
         else{
             if(allObj){
@@ -124,11 +136,28 @@ export default class ProductService{
         }
     }
 
+    purge = async()=>{
+        let obj = await this.getAll();
+                
+        if(obj){
+            obj.forEach((e)=>{
+                e.destroy();
+            })
+        }else{
+            throw new Error("Nu s-a gasit Produse in baza de date!");
+        }
+    }
+
     update= async(id, user)=>{
         let obj = await this.getById(id);
-
         if(user.name == '' && user.price=='' && user.category_id == ''){
             throw new Error("Nu exista propietati pentru update!");
+        }
+        if(typeof user.price != 'number'){
+            throw new Error("Campul price nu este numar!");
+        }
+        if(typeof user.category_id != 'number'){
+            throw new Error("Campul category_id nu este numar!");
         }
         if(obj){
 

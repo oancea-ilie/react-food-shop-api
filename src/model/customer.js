@@ -2,37 +2,24 @@ import { Sequelize } from "sequelize";
 
 export default (sequelize)=>{
 
-    class Student extends Sequelize.Model{}
+    class Customer extends Sequelize.Model{}
 
-    Student.init({
+    Customer.init({
         id:{
             type:Sequelize.INTEGER,
             primaryKey : true,
             autoIncrement:true
         },
 
-        firstName:{
+        name:{
             type:Sequelize.STRING,
             allowNull:false,
             validate: {
                 notNull:{
-                    msg: 'firstName can not be null!'
+                    msg: 'name can not be null!'
                 },
                 notEmpty:{
-                    msg:'firstName can not be empty!'
-                },
-            },
-        },
-
-        lastName:{
-            type: Sequelize.STRING,
-            allowNull: false,
-            validate: {
-                notNull:{
-                    msg: 'lastName can not be null!'
-                },
-                notEmpty:{
-                    msg:'lastName can not be empty!'
+                    msg:'name can not be empty!'
                 },
             },
         },
@@ -70,5 +57,5 @@ export default (sequelize)=>{
         updatedAt:false,
     });
 
-    return Student;
+    return Customer;
 };

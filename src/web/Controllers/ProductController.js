@@ -15,6 +15,7 @@ export default class ProductController{
          this.orderBy();
          this.getById();
          this.create();
+         this.purge();
          this.delete();
          this.update();
 
@@ -99,6 +100,19 @@ export default class ProductController{
            }
        })
    }
+
+    purge = async()=>{
+        this.route.delete("/all", async(req,res,next)=>{
+            try{
+                await this.productService.purge();
+
+                res.status(204).end();
+
+            }catch(e){
+                next(e);
+            }
+        });
+    }
 
    delete = async()=>{
        this.route.delete("/:id", async(req,res,next)=>{

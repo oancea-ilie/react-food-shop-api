@@ -42,10 +42,10 @@ export default class CategoryService{
             throw new Error("Propietati invalide!");
         }
         else if(newObj.name == null){
-            throw new Error("name empty!");
+            throw new Error("Campul name este gol");
         }
         else if(newObj.img == null){
-            throw new Error("img empty!");
+            throw new Error("Campul img este gol");
         }
         else{
             if(allObj){
@@ -60,6 +60,18 @@ export default class CategoryService{
 
         }
 
+    }
+
+    purge = async()=>{
+        let obj = await this.getAll();
+                
+        if(obj){
+            obj.forEach((e)=>{
+                e.destroy();
+            })
+        }else{
+            throw new Error("Nu s-a gasit Categories in baza de date!");
+        }
     }
 
 

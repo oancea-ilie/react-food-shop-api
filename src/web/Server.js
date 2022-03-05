@@ -8,14 +8,14 @@ import ProductController from "./Controllers/ProductController.js";
 import CategoryService from "../services/CategoryServices.js";
 import CategoryController from "./Controllers/CategoryController.js";
 
-import StudentService from "../services/StudentService.js";
-import StudentController from "./Controllers/StudentController.js";
+import CustomerService from "../services/CustomerService.js";
+import CustomerController from "./Controllers/CustomerController.js";
 
 
 export default  class Server{
 
-    constructor( ){
-        this.app=express();
+    constructor(){
+        this.app = express();
 
         this.app.use(express.json());
         this.app.use(express.urlencoded({extended:false}));
@@ -31,8 +31,8 @@ export default  class Server{
         
       }
 
-      run= async()=>{
-        let db = await this.repo.createDb();
+      run= async(database)=>{
+        let db = await this.repo.createDb(database);
 
         db.sequelize.sync()
         .then( () => {
@@ -47,9 +47,8 @@ export default  class Server{
             let categoryService = new CategoryService(db.models, db.sequelize);
             let categoryController = new CategoryController(categoryService, this.app);
 
-            let studentService = new StudentService(db.models,db.sequelize);
-            let studentController = new StudentController(studentService, this.app);
-
+            let customerService = new CustomerService(db.models, db.sequelize);
+            let customerController = new CustomerController(customerService, this.app);
         });
 
 

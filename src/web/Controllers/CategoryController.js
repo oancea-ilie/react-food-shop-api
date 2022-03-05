@@ -13,6 +13,7 @@ export default class CategoryController{
          this.getAll();
          this.getById();
          this.create();
+         this.purge();
          this.delete();
          this.update();
 
@@ -65,6 +66,19 @@ export default class CategoryController{
            }
        })
    }
+
+    purge = async()=>{
+        this.route.delete("/all", async(req,res,next)=>{
+            try{
+                await this.categoryService.purge();
+
+                res.status(204).end();
+
+            }catch(e){
+                next(e);
+            }
+        });
+    }
 
    delete = async()=>{
        this.route.delete("/:id", async(req,res,next)=>{

@@ -1,18 +1,19 @@
 import  express from "express";
 
-export default class StudentController{
+export default class CustomerController{
 
-     constructor(studentServices,app){
+     constructor(customerServices,app){
 
-         this.studentServices = studentServices;
+         this.customerServices = customerServices;
 
          this.route = express.Router();
 
-         app.use("/api/v1/students", this.route);
+         app.use("/api/v1/customers", this.route);
 
          this.getAll();
          this.getById();
          this.create();
+         this.purge();
          this.delete();
          this.update();
 
@@ -25,7 +26,7 @@ export default class StudentController{
          this.route.get("/", async (req,res,next)=>{
              try{
 
-                let obj = await this.studentServices.getAll();
+                let obj = await this.customerServices.getAll();
 
                 res.status(200).json(obj);
 
@@ -42,7 +43,7 @@ export default class StudentController{
             try{
                 let {id}= req.params;
 
-                let obj = await this.studentServices.getById(id);
+                let obj = await this.customerServices.getById(id);
 
                 res.status(200).json(obj);
 
@@ -58,7 +59,7 @@ export default class StudentController{
             try{
                 let obj = req.body;
 
-                await this.studentServices.create(obj);
+                await this.customerServices.create(obj);
 
                 res.status(204).end();
             }catch(e){
@@ -67,11 +68,24 @@ export default class StudentController{
         })
     }
 
+    purge = async()=>{
+        this.route.delete("/all", async(req,res,next)=>{
+            try{
+                await this.customerServices.purge();
+
+                res.status(204).end();
+
+            }catch(e){
+                next(e);
+            }
+        });
+    }
+
     delete = async()=>{
         this.route.delete("/:id", async(req,res,next)=>{
             try{
                 let {id} = req.params;
-                await this.studentServices.delete(id);
+                await this.customerServices.delete(id);
 
                 res.status(204).end();
 
@@ -87,7 +101,7 @@ export default class StudentController{
                 let {id} = req.params;
                 let user = req.body;
                 
-                await this.studentServices.update(id,user);
+                await this.customerServices.update(id,user);
 
                 res.status(204).end();
                 
