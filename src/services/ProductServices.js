@@ -1,5 +1,4 @@
 
-
 export default class ProductService{
       
     constructor({Product,Category},{sequelize}){
@@ -177,8 +176,5 @@ export default class ProductService{
             throw new Error(`Nu s-a gasit Product cu acest ID pentru a putea face Update!`);
         }
     }
-
-
-
 
 }
